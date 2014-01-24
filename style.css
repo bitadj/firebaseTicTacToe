@@ -1,0 +1,36 @@
+body {
+	background-color: #3b653d;
+	font-family: 'Covered By Your Grace', cursive;
+	font-size: 3em;
+	color: #EDEDED;
+	-webkit-user-select: none;  
+	-moz-user-select: none;    
+	-ms-user-select: none;      
+	user-select: none;
+}
+
+.clear {
+	clear:both;
+}
+
+.cell {
+	float: left;
+	width: 150px;
+	height: 150px;
+	text-align: center;
+	font-size: 2em;
+}
+
+
+
+.rightBorder {
+	border-right: 8px solid #EDEDED;
+}
+
+.bottomBorder {
+	border-bottom: 8px solid #EDEDED;
+}
+
+h2 {
+	text-align: center;
+}
