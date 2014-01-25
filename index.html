@@ -1,21 +1,25 @@
  
 
-<html x-ng-app="">
+<html>
 	<head>
 <!-- 		<link rel="stylesheet" type="text/css" href="css/normalize.css"> -->
-		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<link rel="stylesheet" type="text/css" href="style.css">
 		<link href='http://fonts.googleapis.com/css?family=Covered+By+Your+Grace' rel='stylesheet' type='text/css'>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular.min.js"></script>
+
+		<script src="https://cdn.firebase.com/v0/firebase.js"></script>
+		<script src="https://cdn.firebase.com/libs/angularfire/0.6.0/angularfire.min.js"></script>
+
 		<script type="text/javascript" src="main.js"></script>
 		<title>TicTacToe</title>
 	</head>
 
 	<body>
 		<h2>TicTacToe</h2>
-		<div x-ng-controller="TicTacCtrl">
-			<div class="clear" id="row{{$index}}" x-ng-repeat="row in cells track by $index">
-				<div x-ng-class="{cell:true, rightBorder:rightBorder($parent.$index, $index), bottomBorder:bottomBorder($parent.$index, $index)}" x-ng-repeat="cell in row track by $index" x-ng-click="takeTurn($parent.$index, $index)">
-						{{cells[$parent.$index][$index]}}
+		<div  x-ng-app="TicTac" x-ng-controller="ticTacCtrl">
+			<div class="clear" id="row{{$index}}" x-ng-repeat="row in obj.cells track by $index">
+				<div x-ng-class="{cell:true, rightBorder:rightBorder($parent.$index, $index), bottomBorder:bottomBorder($parent.$index, $index)}" x-ng-repeat="cell in row track by $index" x-ng-click="takeTurn($parent.$index, $index);">
+						{{obj.cells[$parent.$index][$index]}}
 				</div>
 			</div>
 		</div>
