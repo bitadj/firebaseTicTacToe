@@ -61,46 +61,30 @@ angular.module("TicTac", ["firebase"])
 			mySymbol = $scope.obj.cells[i][j] = currentSymbol();
 			console.log("mySymbol: " + mySymbol);
 			$scope.obj.xTurn = !$scope.obj.xTurn;
-
-
-			for (var x = 0; x < $scope.obj.cells.length; x++) {
-				console.log($scope.obj.cells[x]);
-				if ( checkWin(row(x)) || checkWin(col(x)) || checkWin(diagOne()) || checkWin(diagTwo()) ){
-					console.log($scope.obj.cells[i][j] + " wins!");
-					break;
-				};
-			}; //close for loop
-
-
+			checkWin(i, j);
 			$scope.obj.$save();
  		}
  	};
 
 
- 	//BITA'S OLD takeTurn FUNCTION!!!
-	// $scope.takeTurn = function(i, j) {
-	// 	if($scope.obj.cells[i][j]=='' && itsMyTurn()){
-	// 		$scope.obj.cells[i][j] = $scope.obj.xTurn ? 'x' : 'o';
-			
-	// 		console.log("mySymbol: " + mySymbol);
-	// 		$scope.obj.xTurn = !$scope.obj.xTurn;
-	// 		mySymbol = $scope.obj.xTurn ?'x':'o';
-
-	// 		for (var x = 0; x < $scope.obj.cells.length; x++) {
-	// 			console.log($scope.obj.cells[x]);
-	// 			if ( checkWin(row(x)) || checkWin(col(x)) || checkWin(diagOne()) || checkWin(diagTwo()) ){
-	// 				console.log($scope.obj.cells[i][j] + " wins!");
-	// 				break;
-	// 			};
-	// 		}; //close for loop
-	// 		$scope.obj.$save();
-	// 	 } //close if(itsMyTurn())
-	// }; //close takeTurn function
-
-
-	function checkWin(triplet) {
-		return triplet[0] == triplet[1] && triplet[0] == triplet[2] && triplet[0] != "";
+	function checkWin(i, j) {
+		for (var x = 0; x < $scope.obj.cells.length; x++) {
+			console.log($scope.obj.cells[x]);
+			if (checkCombos(x)){
+				console.log($scope.obj.cells[i][j] + " wins!");
+					break;
+			};
+		}; //close for loop
 	};
+
+	function checkCombos(x) {
+		return checkThreeCells(row(x)) || checkThreeCells(col(x)) || checkThreeCells(diagOne()) || checkThreeCells(diagTwo())
+	}
+
+	function checkThreeCells(triplet) {
+		return triplet[0] == triplet[1] && triplet[0] == triplet[2] && triplet[0] != "";
+	}
+
 	function row(r) {
 		return $scope.obj.cells[r];
 	};
