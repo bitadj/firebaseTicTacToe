@@ -1,5 +1,6 @@
 var ticTacRef;
 var IDs;
+var mySymbol;
 
 angular.module("TicTac", ["firebase"])
 	.controller("ticTacCtrl", function($scope, $firebase){
@@ -14,7 +15,7 @@ angular.module("TicTac", ["firebase"])
 		{
 
 			$scope.fbRoot.$add( { cells:[['','',''],['','',''],['','','']],
-				xTurn:false} );
+				xTurn:true} );
 			$scope.fbRoot.$on("change", function() {
 				IDs = $scope.fbRoot.$getIndex();
 				$scope.obj = $scope.fbRoot.$child(IDs[0]);
@@ -24,44 +25,93 @@ angular.module("TicTac", ["firebase"])
 		{
 			$scope.obj = $scope.fbRoot.$child(IDs[0]);
 		}
-
 	});
 
+ 	cellEmpty = function(i, j) {
+		return $scope.obj.cells[i][j] == '';
+ 	};
 
 
 
+ 	currentSymbol = function() {
+ 	  return $scope.obj.xTurn ? 'x' : 'o';
+ 	} 	
 
-	$scope.takeTurn = function(i, j) {
-		$scope.obj.cells[i][j] = ($scope.obj.cells[i][j]=='' ? (($scope.obj.xTurn = !$scope.obj.xTurn) ? 'x' : 'o'): $scope.obj.cells[i][j]);
+ 	myTurn = function() {
+ 		return currentSymbol() == mySymbol;
+ 	};
+
+ 	currentSymbolUnused = function() {
+ 		return !$scope.obj.cells.join().match(currentSymbol());
+ 	};
+
+ 	iDontHaveASymbol = function() {
+ 		return !mySymbol;
+ 	};
+ 	symbolPlayable = function() {
+ 		return myTurn() || (currentSymbolUnused() && iDontHaveASymbol());
+ 	} 
+
+ 	canMove = function(i, j) {
+ 		return cellEmpty(i, j) && symbolPlayable();
+ 	};
+
+ 	$scope.takeTurn = function(i, j) {
+ 		if(canMove(i, j)) {   
+			mySymbol = $scope.obj.cells[i][j] = currentSymbol();
+			console.log("mySymbol: " + mySymbol);
+			$scope.obj.xTurn = !$scope.obj.xTurn;
+
+
+			for (var x = 0; x < $scope.obj.cells.length; x++) {
+				console.log($scope.obj.cells[x]);
+				if ( checkWin(row(x)) || checkWin(col(x)) || checkWin(diagOne()) || checkWin(diagTwo()) ){
+					console.log($scope.obj.cells[i][j] + " wins!");
+					break;
+				};
+			}; //close for loop
+
+
 			$scope.obj.$save();
-		
+ 		}
+ 	};
 
-		for (var x = 0; x < $scope.obj.cells.length; x++) {
-			console.log($scope.obj.cells[x]);
-			if ( checkWin(row(x)) || checkWin(col(x)) || checkWin(diagOne()) || checkWin(diagTwo()) ) {
-				console.log($scope.obj.cells[i][j] + " wins!");
-				break;
-			};
-		}; //close for loop
 
-		 
-	}; //close takeTurn function
+ 	//BITA'S OLD takeTurn FUNCTION!!!
+	// $scope.takeTurn = function(i, j) {
+	// 	if($scope.obj.cells[i][j]=='' && itsMyTurn()){
+	// 		$scope.obj.cells[i][j] = $scope.obj.xTurn ? 'x' : 'o';
+			
+	// 		console.log("mySymbol: " + mySymbol);
+	// 		$scope.obj.xTurn = !$scope.obj.xTurn;
+	// 		mySymbol = $scope.obj.xTurn ?'x':'o';
+
+	// 		for (var x = 0; x < $scope.obj.cells.length; x++) {
+	// 			console.log($scope.obj.cells[x]);
+	// 			if ( checkWin(row(x)) || checkWin(col(x)) || checkWin(diagOne()) || checkWin(diagTwo()) ){
+	// 				console.log($scope.obj.cells[i][j] + " wins!");
+	// 				break;
+	// 			};
+	// 		}; //close for loop
+	// 		$scope.obj.$save();
+	// 	 } //close if(itsMyTurn())
+	// }; //close takeTurn function
 
 
 	function checkWin(triplet) {
-		return (triplet[0] == triplet[1] && triplet[0] == triplet[2] && triplet[0] != "");
+		return triplet[0] == triplet[1] && triplet[0] == triplet[2] && triplet[0] != "";
 	};
 	function row(r) {
-		return( $scope.obj.cells[r] );
+		return $scope.obj.cells[r];
 	};
 	function col(c) {
-		return ([$scope.obj.cells[0][c], $scope.obj.cells[1][c], $scope.obj.cells[2][c]]);
+		return [$scope.obj.cells[0][c], $scope.obj.cells[1][c], $scope.obj.cells[2][c]];
 	};
 	function diagOne() {
-		return ([$scope.obj.cells[0][0], $scope.obj.cells[1][1], $scope.obj.cells[2][2]]);
+		return [$scope.obj.cells[0][0], $scope.obj.cells[1][1], $scope.obj.cells[2][2]];
 	};
 	function diagTwo() {
-		return ([$scope.obj.cells[0][2], $scope.obj.cells[1][1], $scope.obj.cells[2][0]]);
+		return [$scope.obj.cells[0][2], $scope.obj.cells[1][1], $scope.obj.cells[2][0]];
 	};
 
 
