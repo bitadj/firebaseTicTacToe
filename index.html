@@ -11,13 +11,13 @@
 		<script type="text/javascript" src="main.js"></script>
 		<title>TicTacToe</title>
 	</head>
-
+	
 	<body>
 		<h2>TicTacToe</h2>
-		<div  x-ng-app="TicTac" x-ng-controller="ticTacCtrl">
+		<div class="game" x-ng-app="TicTac" x-ng-controller="ticTacCtrl">
 			<div class="clear" id="row{{$index}}" x-ng-repeat="row in obj.cells track by $index">
 				<div x-ng-class="{cell:true, rightBorder:rightBorder($parent.$index, $index), bottomBorder:bottomBorder($parent.$index, $index)}" x-ng-repeat="cell in row track by $index" x-ng-click="takeTurn($parent.$index, $index);">
-						{{obj.cells[$parent.$index][$index]}}
+					{{obj.cells[$parent.$index][$index]}}
 				</div>
 			</div>
 		</div>
